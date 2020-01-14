@@ -12,10 +12,15 @@ firebase.initializeApp({
     appId: "1:609585162757:web:788b2791b5f10adc7cca6c"
 });
 
+function Loading() {
+    return <div className="lds"></div>
+}
+
 export default class List extends Component {
     state = {
         list: [],
         prompt: false,
+        loading: true,
     }
     msg = {}
     toggle = (cb, msg = {}) => {
@@ -91,22 +96,25 @@ export default class List extends Component {
         }
         return (
             this.state.prompt ? <div className="prompt">
-                <div className="prompt-t">{this.msg.title}</div>
-                <div className="prompt-c">
-                    <div className="prompt-n"><button className="green" onClick={() => this.toggle()}>{this.msg.no}</button></div>
-                    <div className="prompt-y"><button className="danger" onClick={this.cb}>{this.msg.yes}</button></div>
+                <div className="p-c">
+                    <div className="prompt-t">{this.msg.title}</div>
+                    <div className="prompt-c">
+                        <div className="prompt-n"><button className="green" onClick={() => this.toggle()}>{this.msg.no}</button></div>
+                        <div className="prompt-y"><button className="danger" onClick={this.cb}>{this.msg.yes}</button></div>
+                    </div>
                 </div>
-            </div> : <div className="list">
-                <div className="list-g">
+            </div> : <div className={'list' + (this.state.loading ? ' busy' : '')}>
+                {this.state.loading && <Loading />}
+                {!this.state.loading && <div className="list-g">
                     <div className="list-gi">
                         <input ref="input" type="text" />
                     </div>
                     <div className="list-gb">
                         <button onClick={add} className="green"><img src={require('../plus.png')} /></button>
                     </div>
-                </div>
-                <div className="list-c">
-                {this.state.list.map((f, i) => {
+                </div>}
+                {!this.state.loading && <div className="list-c">
+                    {this.state.list.map((f, i) => {
                         return <div className="list-i" key={i} onClick={() => itemClick(i)}>
                             <div className="lbl">{f.name}</div>
                             <div className="btnc">
@@ -123,7 +131,7 @@ export default class List extends Component {
                         </div>
                     })}
                     {this.state.list.length === 0 && <div className="list-i empty">No items</div>}
-                </div>
+                </div>}
                 {this.state.list.length > 0 && <div className="list-gs"><button onClick={reset} className="danger">Reset</button></div>}
             </div>
         )

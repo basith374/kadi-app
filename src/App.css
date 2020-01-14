@@ -16,6 +16,15 @@ input, button {
     font-family: 'Montserrat', sans-serif;
     outline: none;
 }
+.list {
+    display: flex;
+    flex-direction: column;
+}
+.list.busy {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .list,
 .prompt {
     padding: 1rem 0;
@@ -50,6 +59,7 @@ input, button {
 }
 .list-c {
     padding: 1rem 0;
+    flex: 1;
 }
 .list-gi {
     flex: 1;
@@ -60,6 +70,21 @@ button {
     border: none;
     height: 2rem;
     border-radius: 1rem;
+    padding: 0;
+}
+
+.list-g button,
+.list-c button {
+    width: 32px;
+}
+.prompt {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.prompt button,
+.list-gs button {
     width: 100%;
 }
 .list input {
@@ -117,3 +142,16 @@ button.less {
 button.green {
     background: var(--green);
 }
+.lds {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #fff transparent #fff transparent;
+    animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0); }
+    100% { transform: rotate(360deg); }
+  }
