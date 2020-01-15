@@ -32,7 +32,7 @@ input, button {
     min-height: 100%;
 }
 .prompt-t {
-    color: #F26A8D;
+    color: #fff;
     padding: 1rem;
     text-align: center;
 }
@@ -45,7 +45,6 @@ input, button {
     padding: 0 .5rem;
 }
 .list-g {
-    margin-bottom: 1rem;
     display: flex;
     padding: 0 1rem;
 }
@@ -63,14 +62,14 @@ input, button {
 }
 .list-gi {
     flex: 1;
-    margin-right: 1rem;
 }
 button {
-    background: #fff;
-    border: none;
     height: 2rem;
     border-radius: 1rem;
     padding: 0;
+    background: transparent;
+    color: #777;
+    border: 1px solid #555;
 }
 
 .list-g button,
@@ -89,7 +88,7 @@ button {
 }
 .list input {
     height: 2rem;
-    background: var(--input);
+    background: transparent;
     border: 1px solid #555;
     padding: 0 1rem;
     border-radius: 1rem;
@@ -99,8 +98,11 @@ button {
 .list-i {
     display: flex;
     transition: background-color 500ms linear;
-    padding: .5rem 1rem;
     user-select: none;
+}
+.list-ir {
+    padding: .5rem 1rem;
+    display: flex;
 }
 .list-i:active {
     background-color: #EEE5E9;
@@ -109,6 +111,7 @@ button {
     flex: 1;
     color: #EEE5E9;
     line-height: 2rem;
+    padding: .5rem 1rem;
 }
 .list-i .inp {
     width: 5rem;
@@ -122,21 +125,17 @@ button {
     color: #F26A8D;
 }
 button.danger {
-    background: var(--danger);
+    border: 1px solid var(--danger);
     color: #fff;
 }
 button.danger:active {
     background: rgb(214, 57, 37);
 }
-button.less,
 button.more {
-    color: #fff;
-}
-button.more {
-    background: var(--more);
+    border-color: var(--more);
 }
 button.less {
-    background: var(--less);
+    border-color: var(--less);
     color: #333;
 }
 button.green {

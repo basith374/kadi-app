@@ -31,28 +31,32 @@ export default class List extends Component {
         })
     }
     componentDidMount() {
-        firebase.database().ref('weblist').once('value').then(s => {
+        firebase.database().ref('weblist').on('value', s => {
             let list = s.val();
             if(list) {
                 list = list.map(f => ({name: f, count: 0}));
                 this.setState({list, loading: false});
             }
         });
+        window.onpopstate = () => this.setState({prompt: false});
+    }
+    componentDidUpdate(props, state) {
+        if(this.state.prompt && !state.prompt) window.history.pushState({}, '', '');
     }
     render() {
         let saveList = () => firebase.database().ref('weblist').set(this.state.list.map(f => f.name))
         let increment = (idx) => {
             return e => {
-                e.stopPropagation();
                 this.state.list[idx].count++;
                 this.setState({list: this.state.list}, saveList);
             }
         }
         let decrement = (idx) => {
             return e => {
-                e.stopPropagation();
-                this.state.list[idx].count--;
-                this.setState({list: this.state.list}, saveList);
+                if(this.state.list[idx].count > 0) {
+                    this.state.list[idx].count--;
+                    this.setState({list: this.state.list}, saveList);
+                }
             }
         }
         let reset = () => {
@@ -85,21 +89,31 @@ export default class List extends Component {
             let cb = () => removeItem(idx);
             let msg = {title: 'Are you sure you want to remove?', yes: 'Remove', no: 'Don\'t remove'};
             this.toggle(cb, msg);
+            window.navigator.vibrate(100);
         }
         let setVal = (idx) => {
             return e => {
                 this.state.list.map((f, i) => {
+                    e.target.value = parseInt(e.target.value, 10);
                     if(i === idx) f.count = e.target.value;
                 });
                 this.setState({list: this.state.list});
             }
+        }
+        let onKeyDown = e => {
+            if(e.keyCode === 13) add();
+        }
+        let onMouseDown = i => {
+            this.press = setTimeout(() => {
+                itemClick(i);
+            }, 500);
         }
         return (
             this.state.prompt ? <div className="prompt">
                 <div className="p-c">
                     <div className="prompt-t">{this.msg.title}</div>
                     <div className="prompt-c">
-                        <div className="prompt-n"><button className="green" onClick={() => this.toggle()}>{this.msg.no}</button></div>
+                        <div className="prompt-n"><button onClick={() => this.toggle()}>{this.msg.no}</button></div>
                         <div className="prompt-y"><button className="danger" onClick={this.cb}>{this.msg.yes}</button></div>
                     </div>
                 </div>
@@ -107,26 +121,25 @@ export default class List extends Component {
                 {this.state.loading && <Loading />}
                 {!this.state.loading && <div className="list-g">
                     <div className="list-gi">
-                        <input ref="input" type="text" />
-                    </div>
-                    <div className="list-gb">
-                        <button onClick={add} className="green"><img src={require('../plus.png')} /></button>
+                        <input ref="input" type="text" onKeyDown={onKeyDown} />
                     </div>
                 </div>}
                 {!this.state.loading && <div className="list-c">
                     {this.state.list.map((f, i) => {
-                        return <div className="list-i" key={i} onClick={() => itemClick(i)}>
+                        return <div className="list-i" key={i} onTouchStart={() => onMouseDown(i)} onTouchEnd={() => clearTimeout(this.press)}>
                             <div className="lbl">{f.name}</div>
-                            <div className="btnc">
-                                <button className="less" onClick={decrement(i)}>
-                                    <img src={require('../minus.png')} />
-                                </button>
-                            </div>
-                            <div className="inp"><input onClick={e => e.stopPropagation()} value={f.count} onChange={setVal(i)} type="number" /></div>
-                            <div className="btnc">
-                                <button className="more" onClick={increment(i)}>
-                                    <img src={require('../plus.png')} />
-                                </button>
+                            <div className="list-ir" onMouseDown={e => e.stopPropagation()}>
+                                <div className="btnc">
+                                    <button className="less" onClick={decrement(i)}>
+                                        <img src={require('../minus.png')} />
+                                    </button>
+                                </div>
+                                <div className="inp"><input value={f.count} onChange={setVal(i)} type="number" /></div>
+                                <div className="btnc">
+                                    <button className="more" onClick={increment(i)}>
+                                        <img src={require('../plus.png')} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     })}
