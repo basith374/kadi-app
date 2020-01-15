@@ -126,7 +126,7 @@ export default class List extends Component {
                 </div>}
                 {!this.state.loading && <div className="list-c">
                     {this.state.list.map((f, i) => {
-                        return <div className="list-i" key={i} onTouchStart={() => onMouseDown(i)} onTouchEnd={() => clearTimeout(this.press)}>
+                        return <div className="list-i" key={i} onTouchStart={() => onMouseDown(i)} onTouchMove={() => clearTimeout(this.press)} onTouchEnd={() => clearTimeout(this.press)}>
                             <div className="lbl">{f.name}</div>
                             <div className="list-ir" onTouchStart={e => e.stopPropagation()}>
                                 <div className="btnc">
