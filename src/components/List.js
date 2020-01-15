@@ -128,7 +128,7 @@ export default class List extends Component {
                     {this.state.list.map((f, i) => {
                         return <div className="list-i" key={i} onTouchStart={() => onMouseDown(i)} onTouchEnd={() => clearTimeout(this.press)}>
                             <div className="lbl">{f.name}</div>
-                            <div className="list-ir" onMouseDown={e => e.stopPropagation()}>
+                            <div className="list-ir" onTouchStart={e => e.stopPropagation()}>
                                 <div className="btnc">
                                     <button className="less" onClick={decrement(i)}>
                                         <img src={require('../minus.png')} />
