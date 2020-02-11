@@ -120,6 +120,9 @@ button {
 .inp input {
     text-align: center;
 }
+.inp input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 .list-i.empty {
     justify-content: center;
     color: #F26A8D;
