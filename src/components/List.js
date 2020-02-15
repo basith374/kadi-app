@@ -16,9 +16,15 @@ function Loading() {
     return <div className="lds"></div>
 }
 
+function retrieveItems() {
+    let items = localStorage.getItem('items');
+    if(items) items = items.split(',').map(i => ({name: i, count: 0}));
+    return items || [];
+}
+
 export default class List extends Component {
     state = {
-        list: [],
+        list: retrieveItems(),
         prompt: false,
         loading: true,
     }
@@ -37,6 +43,7 @@ export default class List extends Component {
                 return _.get(_.find(this.state.list, ['name', name]), 'count', 0);
             }
             if(list) {
+                localStorage.setItem('items', list);
                 list = list.map(f => ({name: f, count: getCount(f)}));
                 this.setState({list, loading: false});
             }
@@ -47,7 +54,11 @@ export default class List extends Component {
         if(this.state.prompt && !state.prompt) window.history.pushState({}, '', '');
     }
     render() {
-        let saveList = () => firebase.database().ref('weblist').set(this.state.list.map(f => f.name))
+        let saveList = () => {
+            let list = this.state.list.map(f => f.name);
+            firebase.database().ref('weblist').set(list);
+            localStorage.setItem('items', list);
+        }
         let reorderList = () => {
             let debounce = () => {
                 this.setState({list: this.state.list.sort((a, b) => b.count - a.count)}, saveList);
@@ -126,6 +137,7 @@ export default class List extends Component {
         let toggleReset = show => {
             document.querySelector('.list-gs').style.display = show ? 'block' : 'none';
         }
+        let busy = this.state.loading && this.state.list.length === 0;
         return (
             this.state.prompt ? <div className="prompt">
                 <div className="p-c">
@@ -135,14 +147,14 @@ export default class List extends Component {
                         <div className="prompt-y"><button className="danger" onClick={this.cb}>{this.msg.yes}</button></div>
                     </div>
                 </div>
-            </div> : <div className={'list' + (this.state.loading ? ' busy' : '')}>
-                {this.state.loading && <Loading />}
-                {!this.state.loading && <div className="list-g">
+            </div> : <div className={'list' + (busy ? ' busy' : '')}>
+                {busy && <Loading />}
+                {!busy && <div className="list-g">
                     <div className="list-gi">
                         <input ref="input" type="text" onKeyDown={onKeyDown} onFocus={() => toggleReset(false)} onBlur={() => toggleReset(true)} />
                     </div>
                 </div>}
-                {!this.state.loading && <div className="list-c">
+                {!busy && <div className="list-c">
                     {this.state.list.map((f, i) => {
                         return <div className="list-i" key={i} onMouseDown={() => onMouseDown(i)} onMouseUp={() => clearTimeout(this.press)} onTouchStart={() => onMouseDown(i)} onTouchMove={() => clearTimeout(this.press)} onTouchEnd={() => clearTimeout(this.press)}>
                             <div className="lbl">{f.name}</div>
