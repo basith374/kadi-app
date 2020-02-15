@@ -11,11 +11,6 @@
       "src": "donut.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "splash.png",
-      "sizes": "1242x512",
-      "type": "image/png"
     }
   ],
   "start_url": ".",
