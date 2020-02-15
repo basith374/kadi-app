@@ -69,16 +69,14 @@ export default class List extends Component {
         }
         let increment = (idx) => {
             return e => {
-                this.state.list[idx].count++;
-                this.setState({list: this.state.list});
+                this.setState({list: this.state.list.map(i => Object.assign({}, i, {count: i.count + 1}))});
                 reorderList();
             }
         }
         let decrement = (idx) => {
             return e => {
                 if(this.state.list[idx].count > 0) {
-                    this.state.list[idx].count--;
-                    this.setState({list: this.state.list});
+                    this.setState({list: this.state.list.map(i => Object.assign({}, i, {count: i.count - 1}))});
                     reorderList();
                 }
             }
@@ -118,11 +116,11 @@ export default class List extends Component {
         }
         let setVal = (idx) => {
             return e => {
-                this.state.list.map((f, i) => {
-                    e.target.value = parseInt(e.target.value, 10);
-                    if(i === idx) f.count = e.target.value;
-                });
-                this.setState({list: this.state.list});
+                this.setState({list: this.state.list.map((f, i) => {
+                    let n = {};
+                    if(i === idx) n.count = parseInt(e.target.value, 10);
+                    return Object.keys(n).length ? Object.assign({}, f, n) : f;
+                })});
                 reorderList();
             }
         }
@@ -161,13 +159,13 @@ export default class List extends Component {
                             <div className="list-ir" onTouchStart={e => e.stopPropagation()}>
                                 <div className="btnc">
                                     <button className="less" onClick={decrement(i)}>
-                                        <img src={require('../minus.png')} />
+                                        <img src={require('../minus.png')} alt="less" />
                                     </button>
                                 </div>
                                 <div className="inp"><input value={f.count} onChange={setVal(i)} type="number" /></div>
                                 <div className="btnc">
                                     <button className="more" onClick={increment(i)}>
-                                        <img src={require('../plus.png')} />
+                                        <img src={require('../plus.png')} alt="more" />
                                     </button>
                                 </div>
                             </div>
