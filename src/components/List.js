@@ -47,6 +47,8 @@ export default class List extends Component {
                 list = list.map(f => ({name: f, count: getCount(f)}));
                 this.setState({list, loading: false});
             }
+        }).catch(e => {
+            this.setState({loading: false});
         });
         window.onpopstate = () => this.setState({prompt: false});
     }
@@ -69,14 +71,14 @@ export default class List extends Component {
         }
         let increment = (idx) => {
             return e => {
-                this.setState({list: this.state.list.map(i => Object.assign({}, i, {count: i.count + 1}))});
+                this.setState({list: this.state.list.map((item, i) => idx === i ? Object.assign({}, item, {count: item.count + 1}) : item)});
                 reorderList();
             }
         }
         let decrement = (idx) => {
             return e => {
                 if(this.state.list[idx].count > 0) {
-                    this.setState({list: this.state.list.map(i => Object.assign({}, i, {count: i.count - 1}))});
+                    this.setState({list: this.state.list.map((item, i) => idx === i ? Object.assign({}, i, {count: i.count - 1}) : item)});
                     reorderList();
                 }
             }
