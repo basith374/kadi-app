@@ -47,8 +47,6 @@ export default class List extends Component {
                 list = list.map(f => ({name: f, count: getCount(f)}));
                 this.setState({list, loading: false});
             }
-        }).catch(e => {
-            this.setState({loading: false});
         });
         window.onpopstate = () => this.setState({prompt: false});
     }
