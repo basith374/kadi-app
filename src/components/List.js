@@ -70,14 +70,12 @@ export default class List extends Component {
         let increment = (idx) => {
             return e => {
                 this.setState({list: this.state.list.map((item, i) => idx === i ? Object.assign({}, item, {count: item.count + 1}) : item)});
-                reorderList();
             }
         }
         let decrement = (idx) => {
             return e => {
                 if(this.state.list[idx].count > 0) {
                     this.setState({list: this.state.list.map((item, i) => idx === i ? Object.assign({}, item, {count: item.count - 1}) : item)});
-                    reorderList();
                 }
             }
         }
@@ -88,6 +86,9 @@ export default class List extends Component {
             }
             this.msg = {title: 'Are you sure you want to reset?', yes: 'Reset', no: 'Don\'t reset'};
             this.setState({prompt: true});
+        }
+        let reorder = () => {
+            this.setState({list: this.state.list.sort((a, b) => b.count - a.count)}, saveList);
         }
         let add = () => {
             let name = this.refs.input.value;
@@ -121,7 +122,6 @@ export default class List extends Component {
                     if(i === idx) n.count = parseInt(e.target.value, 10);
                     return Object.keys(n).length ? Object.assign({}, f, n) : f;
                 })});
-                reorderList();
             }
         }
         let onKeyDown = e => {
@@ -173,7 +173,7 @@ export default class List extends Component {
                     })}
                     {this.state.list.length === 0 && <div className="list-i empty">No items</div>}
                 </div>}
-                {this.state.list.length > 0 && <div className="list-gs"><button onClick={reset} className="danger">Reset</button></div>}
+                {this.state.list.length > 0 && <div className="list-gs"><button onClick={reorder} className="danger">Reorder</button></div>}
             </div>
         )
     }
